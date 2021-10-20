@@ -38,38 +38,23 @@ app.add_middleware(
 )
 
 
-@app.get("/")
+@app.get("/mosques/")
 async def get_all(db=Depends(get_db)):
-    return crud.get_all(db=db)
+    return crud.get_all_mosques(db=db)
 
 
-@app.post('/mosque-timings/')
-async def get_checks(location: List[str], db: Session = Depends(get_db)):
-    return crud.get_mosque_timings(db=db, location=location)
+@app.get("/mosques/timings/")
+async def get_all(db=Depends(get_db)):
+    return crud.get_all_mosques_timings(db=db)
 
 
-@app.post('/new/')
+@app.post('/mosques/new/')
 async def add_mosque_timings(mosque_timings: mosque_timings.MosqueTimings, db: Session = Depends(get_db)):
     return crud.add_mosque_timings(db=db, mosque_timings=mosque_timings)
 
 
-@app.post('/new-user-location/')
-async def add_device_location(user_location: user_locations.UserLocation, db=Depends(get_db)):
-    return crud.add_location(db=db, user_location=user_location)
-
-
-@app.post('/delete-user-location/')
-async def add_device_location(user_location: user_locations.UserLocation, db=Depends(get_db)):
-    return crud.deleteUserLocation(db=db, user_location=user_location)
-
-
-@app.get("/user-locations/")
-async def user_locations(token: str = Query(...), db=Depends(get_db)):
-    return crud.get_user_locaitons(db=db, token=token)
-
-
-@app.put("/update/")
-def update_checks(mosque_timings: mosque_timings.MosqueTimings, db: Session = Depends(get_db)):
+@app.put("/mosques/update/")
+def update_mosque_timings(mosque_timings: mosque_timings.MosqueTimings, db: Session = Depends(get_db)):
     existing_item = crud.get_mosque_timings(
         db=db, location=mosque_timings.location)
     if existing_item is None:
@@ -83,7 +68,22 @@ def update_checks(mosque_timings: mosque_timings.MosqueTimings, db: Session = De
     return mosque_timings
 
 
-@app.post("/delete/")
+@app.get("/user/locations/")
+async def get_user_locations(token: str = Query(...), db=Depends(get_db)):
+    return crud.get_user_locaitons(db=db, token=token)
+
+
+@app.post('/user/locations/new/')
+async def new_device_location(user_location: user_locations.UserLocation, db=Depends(get_db)):
+    return crud.add_location(db=db, user_location=user_location)
+
+
+@app.post('/user/locations/delete/')
+async def delete_device_location(user_location: user_locations.UserLocation, db=Depends(get_db)):
+    return crud.delete_user_location(db=db, user_location=user_location)
+
+
+@app.post("/all/delete/")
 async def delete(db=Depends(get_db)):
     # crud.deleteMosqueTimings(db=db)
     crud.deleteUserLocation(db=db)

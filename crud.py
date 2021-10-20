@@ -13,10 +13,11 @@ from schemas import mosque_timings, user_locations
 def get_mosque_timings(db: Session, location: List[str]):
     return db.query(models.MosqueTimings).filter(models.MosqueTimings.location == location).first()
 
+def get_all_mosques(db: Session):
+    return db.query(models.MosqueTimings.name, models.MosqueTimings.location).all()
 
-def get_all(db: Session):
+def get_all_mosques_timings(db: Session):
     return db.query(models.MosqueTimings).all()
-
 
 def add_mosque_timings(db: Session, mosque_timings: mosque_timings.MosqueTimings):
     db_mosque_timings = models.MosqueTimings(**mosque_timings.dict())
@@ -48,7 +49,7 @@ def deleteMosqueTimings(db: Session):
     db.delete(all_mosque_timings)
     db.commit()
 
-def deleteUserLocation(db: Session, user_location: user_locations.UserLocation):
+def delete_user_location(db: Session, user_location: user_locations.UserLocation):
     user_location = db.query(models.UserLocation).filter(and_(models.UserLocation.token.__eq__(user_location.token), models.UserLocation.location.__eq__(user_location.location))).first()
     db.delete(user_location)
     db.commit()
